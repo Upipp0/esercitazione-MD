@@ -20,15 +20,7 @@ direzioni. Un atomo che esce dalla faccia destra rientra da quella sinistra.
 Non ci sono superfici, perché non c'è un bordo: ogni molecola d'acqua ha un
 insieme completo di vicini.
 
-```
-   ┌─────┬─────┬─────┐
-   │ ·o· │ ·o· │ ·o· │     la stessa scatola, ripetuta.  Un atomo sul bordo
-   ├─────┼─────┼─────┤     destro è vicino di uno sul bordo sinistro della
-   │ ·o· │ ·O· │ ·o· │     copia accanto -- cioè di se stesso.
-   ├─────┼─────┼─────┤
-   │ ·o· │ ·o· │ ·o· │
-   └─────┴─────┴─────┘
-```
+![condizioni al contorno periodiche](../img/04-pbc.png)
 
 Non hai ottenuto qualcosa per niente. Il sistema è ora **infinito e
 perfettamente periodico**, cosa che le soluzioni vere non sono. Ne seguono
@@ -70,6 +62,8 @@ gmx editconf -f complex.gro -o box.gro -c -d 1.0 -bt dodecahedron
 new box vectors :  7.849  7.849  7.849 (nm)
 new box volume  : 341.95               (nm^3)
 ```
+
+![la scatola, prima e dopo il solvente](../img/04-scatola.png)
 
 ### Perché un dodecaedro rombico e non un cubo
 

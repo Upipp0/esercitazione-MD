@@ -56,8 +56,7 @@ capire a quale dei due crederesti.
   più.** Un legame che si rompe e si riforma su una scala di 10–100 ps è
   campionato male da 125 fotogrammi. Guarda di quanto si sposta il numero, e
   considera quello la tua stima dell'incertezza su qualunque simulazione breve.
-- **Il secondo accettore.** Su 5 ns `gmx hbond` trova l'ossidrile del ligando
-  che dona sia alla catena laterale di Gln102 sia, più di rado, al carbonile
-  dello scheletro di Ala99. Su 250 ps vedrai quasi certamente solo il primo.
-  Un'interazione assente da una traiettoria breve non è un'interazione che non
-  esiste.
+- **Quanti residui rivestono il sito.** `gmx select` ne trova 20 sui 250 ps e
+  27 sui 5 ns: più tempo passa, più residui si affacciano prima o poi sulla
+  tasca. Nessuno dei due numeri è "giusto": dipendono entrambi da quanto hai
+  guardato.

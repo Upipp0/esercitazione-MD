@@ -16,6 +16,11 @@ alla proteina — tipi atomici, cariche, legami, angoli, diedri — ma **nessuno
 ha mai scritti**, perché le piccole molecole possibili sono cento milioni e gli
 amminoacidi venti.
 
+E non è solo questione di parametri: nel file cristallografico il ligando non è
+nemmeno completo.
+
+![il ligando prima e dopo](../img/03-ligando.png)
+
 Quindi il lavoro si divide in due:
 
 1. **Procurarsi i parametri del ligando.** Fatto per te; spiegato qui sotto,

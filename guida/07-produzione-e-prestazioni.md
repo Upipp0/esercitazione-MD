@@ -56,6 +56,29 @@ Nessuna di queste cose cambia il risultato. (Se una modifica alle impostazioni
 cambia il risultato, non è un'impostazione di prestazioni: è un'altra
 simulazione.)
 
+### Come avanza, un passo alla volta
+
+Prima di parlare di velocità conviene sapere che cosa `mdrun` sta facendo
+duecentomila volte di fila.
+
+![il salto della rana e il limite sul passo](../img/07-integrazione.png)
+
+L'integratore `md` del file `.mdp` è il **salto della rana** (*leap-frog*):
+posizioni e velocità non vengono mai calcolate nello stesso istante, ma
+sfalsate di mezzo passo. È una scelta che costa nulla e rende l'integrazione
+molto più stabile.
+
+Il grafico a destra spiega perché il passo non si può alzare a piacere. Un
+integratore di questo tipo conserva l'energia solo finché il passo resta sotto
+una soglia legata al moto **più veloce** presente nel sistema. Sopra quella
+soglia l'energia non va un po' fuori: cresce di un fattore fisso a ogni passo,
+e la simulazione finisce in pochi istanti. Nel nostro sistema il moto più
+veloce è la vibrazione di un legame X–H, ed è esattamente quello che
+`constraints = h-bonds` congela — ed è per questo che possiamo usare 2 fs
+invece di 0,5.
+
+---
+
 ### Regola zero: misura
 
 Ogni `mdrun` stampa la propria velocità verso la fine del log:
@@ -135,12 +158,12 @@ di velocità in più per il doppio dell'hardware, perché 32 è il conteggio
 condivide le unità aritmetiche. Oltre 16, stai pagando soprattutto il
 coordinamento.
 
-**Il che significa che la macchina fa più lavoro totale quando è condivisa.**
-Sedici studenti a due thread ciascuno, se i core fossero indipendenti,
-produrrebbero insieme 16 × 22,6 = 362 ns/day, contro i 134 di uno studente che
-si prende tutti e 32. Indipendenti non lo sono del tutto — la banda di memoria
-è condivisa, quindi il totale reale è più basso di 362 — ma la direzione non è
-in dubbio, ed è il motivo per cui la guida chiede `-nt 2`.
+**Il che significa che la macchina rende di più quando è divisa fra molti.**
+Fai il conto: sedici studenti a due thread ciascuno fanno 16 × 22,6 = 362
+ns/day in tutto. Uno studente che si prende tutti e 32 i thread ne fa 134. I
+core non sono del tutto indipendenti — si contendono la memoria — quindi i 362
+sono una stima ottimistica. Ma il confronto resta nettissimo, ed è il motivo
+per cui la guida chiede `-nt 2`.
 
 E la trappola, che vale la pena ripetere:
 
@@ -199,8 +222,8 @@ standard nel lavoro di produzione.
 
 (I numeri assoluti qui sopra sono più bassi di quelli della tabella della leva
 1 perché la macchina era occupata quando li ho presi. È proprio per questo che
-si confronta un rapporto misurato in sequenza, e mai un numero di oggi contro
-uno della settimana scorsa.)
+si confrontano due misure fatte di seguito sulla stessa macchina, e mai un
+numero di oggi contro uno della settimana scorsa.)
 
 #### 3. Fissare i thread ai core
 
@@ -218,11 +241,14 @@ Se più persone fissano i thread contemporaneamente, devono usare core diversi:
 
 #### 4. Lascia lavorare il sintonizzatore di PME
 
-`-tunepme` è **attivo per impostazione predefinita** e va lasciato attivo. Nei
-primi qualche migliaio di passi `mdrun` sposta lavoro fra la metà in spazio
-reale e quella in spazio reciproco di PME — allargando `rcoulomb` e
-infittendo o diradando la griglia di Fourier insieme, il che lascia invariata
-l'accuratezza — finché le due si bilanciano.
+`-tunepme` è **attivo per impostazione predefinita** e va lasciato attivo.
+
+PME divide il lavoro in due metà (pagina 05): una si calcola nello spazio
+normale, l'altra su una griglia. Quanto lavoro tocca a ciascuna dipende da dove
+metti il confine fra le due, cioè da `rcoulomb`. Nei primi qualche migliaio di
+passi `mdrun` prova a spostare quel confine — allargando il raggio e diradando
+la griglia insieme — finché le due metà non impiegano lo stesso tempo.
+L'accuratezza non cambia: cambia solo come il lavoro è ripartito.
 
 Le conseguenze pratiche:
 
@@ -236,6 +262,8 @@ Le conseguenze pratiche:
 ```
 nstlist = 20     ; nel .mdp, oppure -nstlist 40 da riga di comando
 ```
+
+![la lista dei vicini](../img/07-nstlist.png)
 
 Ricostruire la lista dei vicini costa tempo; farlo meno spesso significa che la
 lista deve coprire più terreno, quindi il margine cresce e ogni valutazione

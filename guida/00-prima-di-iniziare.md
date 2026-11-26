@@ -68,47 +68,52 @@ righe `module`, ogni volta.
 
 ## Che cosa stai per fare, e perché servono quattro passi
 
-Una simulazione di dinamica molecolare non è complicata in linea di principio.
-Hai le coordinate di ogni atomo. Hai una regola che dà la forza su ciascun
-atomo a partire dalla posizione di tutti gli altri. Usi la forza per aggiornare
-la velocità, la velocità per aggiornare la posizione, e ripeti — qualche
+Nella sostanza, una simulazione di dinamica molecolare fa una cosa sola.
+Conosci la posizione di ogni atomo. Hai una regola che, date tutte le
+posizioni, ti dice che forza agisce su ciascun atomo. Allora: la forza cambia
+la velocità, la velocità cambia la posizione, e si ricomincia. Qualche
 centinaio di milioni di volte.
 
-$$
-\mathbf{F}_i = -\nabla_i V(\mathbf{r}_1 \dots \mathbf{r}_N),
-\qquad m_i \ddot{\mathbf{r}}_i = \mathbf{F}_i
-$$
+<p align="center"><img src="../img/formula-newton.png" width="420" alt="seconda legge di Newton"></p>
 
-La regola per le forze è il **campo di forze** (*force field*): una funzione
-$V$ di tutte le coordinate, più le molte migliaia di numeri che la riempiono. È
-una somma di termini semplici, e conviene conoscerne la forma, perché quasi
-tutto quello che farai oggi consiste nel fornire i parametri che le servono:
+Sono la seconda legge di Newton e la definizione di forza come derivata
+dell'energia potenziale. Nient'altro.
 
-$$
-V = \underbrace{\sum_{\text{legami}} \tfrac{1}{2} k_b (r - r_0)^2
-  + \sum_{\text{angoli}} \tfrac{1}{2} k_\theta (\theta - \theta_0)^2
-  + \sum_{\text{diedri}} \tfrac{k_\phi}{2}\big[1 + \cos(n\phi - \delta)\big]}_{\text{legati: tengono insieme la molecola}}
-  + \underbrace{\sum_{i<j} 4\epsilon_{ij}\left[\left(\tfrac{\sigma_{ij}}{r_{ij}}\right)^{12} - \left(\tfrac{\sigma_{ij}}{r_{ij}}\right)^{6}\right]
-  + \sum_{i<j} \frac{q_i q_j}{4\pi\epsilon_0 r_{ij}}}_{\text{non legati: tutto il resto}}
-$$
+Tutta la difficoltà sta in quella $V$, l'energia potenziale: è lei che dice
+quanto costa, in energia, una certa disposizione degli atomi. La funzione $V$
+insieme alle molte migliaia di numeri che la riempiono si chiama **campo di
+forze** (*force field*). Vale la pena guardarla una volta, perché quasi tutto
+quello che farai oggi consiste nel procurarle i numeri che le servono:
 
-I legami sono molle. Gli angoli sono molle. Ruotare attorno a un legame costa
-energia in modo periodico. Gli atomi non legati si respingono forte quando si
-toccano, si attraggono debolmente quando sono vicini, e sentono la reciproca
-carica elettrica.
+<p align="center"><img src="../img/formula-campo-di-forze.png" width="760" alt="il campo di forze"></p>
 
-Nota che cosa *non* c'è. Nessun elettrone. Nessun legame che si rompe o si
-forma. Un campo di forze è una caricatura meccanica classica di una molecola,
-costruita per riprodurre la chimica quantistica e l'esperimento per il tipo di
-molecole su cui è stato parametrizzato. È ottimo sui cambiamenti
-conformazionali ed è del tutto incapace di fare chimica.
+Letta a parole, dice quattro cose.
 
-Il campo di forze che useremo per la proteina è **amber99sb-ildn**, una delle
-scelte standard per le proteine. Conosce tutti e venti gli amminoacidi: dato un
-nome di residuo e un nome di atomo sa dirti la carica, la massa, quali atomi
-sono legati e ogni parametro dell'equazione qui sopra.
+- **I legami sono molle.** Allontana due atomi legati dalla loro distanza di
+  equilibrio $r_0$ e l'energia sale come per una molla.
+- **Gli angoli sono molle.** Stessa storia per l'ampiezza fra tre atomi in
+  fila.
+- **Ruotare attorno a un legame costa energia, in modo periodico.** È il
+  termine dei diedri: girando di 360° si ripassa dalle stesse configurazioni.
+- **Gli atomi non legati si sentono comunque**: si respingono con violenza
+  quando si toccano, si attraggono debolmente quando sono vicini (è il termine
+  di Lennard-Jones), e si attraggono o si respingono secondo la carica (è la
+  legge di Coulomb).
 
-Non ha mai sentito nominare il 2-propilfenolo. Per questo esiste la pagina 03.
+Conta anche quello che nella formula **non** c'è: non ci sono elettroni, e
+nessun legame può rompersi o formarsi. Un campo di forze è una caricatura
+meccanica di una molecola, costruita per riprodurre la chimica quantistica e
+l'esperimento sulle molecole con cui è stato messo a punto. Descrive molto bene
+come una molecola cambia forma; non sa fare chimica.
+
+Il campo di forze che useremo per la proteina si chiama **amber99sb-ildn**, ed
+è una delle scelte standard per le proteine. Conosce tutti e venti gli
+amminoacidi: dategli un nome di residuo e un nome di atomo e sa dire di che
+atomo si tratta, quanto pesa, che carica porta, a chi è legato e con quali
+parametri.
+
+Del 2-propilfenolo, invece, non sa niente: non è un amminoacido e nessuno lo
+ha mai messo in quella tabella. È per questo che esiste la pagina 03.
 
 ---
 

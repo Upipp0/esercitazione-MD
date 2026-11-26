@@ -4,7 +4,32 @@
 
 ---
 
-## Guardala prima di toccarla
+## Di che cosa è fatto il sistema
+
+![la proteina e il ligando](../img/01-proteina.png)
+
+La proteina è il **lisozima del batteriofago T4**, 163 amminoacidi. Non è il
+lisozima in sé a interessarci: questa è una variante costruita in laboratorio
+apposta per studiare come una piccola molecola si lega dentro una proteina.
+
+Due amminoacidi sono stati cambiati, e sono quelli in blu nella figura.
+
+- **Leu99 → Ala** (L99A). La leucina ha una catena laterale voluminosa;
+  l'alanina ce l'ha minuscola. Accorciarla lascia un buco: una **cavità
+  vuota** nel cuore idrofobico della proteina, grande quanto una piccola
+  molecola organica.
+- **Met102 → Gln** (M102Q). La cavità appena creata è tutta apolare. Mettendoci
+  dentro una glutammina si aggiunge **un solo gruppo polare**, capace di fare
+  un legame a idrogeno.
+
+Il ligando, il **2-propilfenolo** (sigla `JZ4` nel file PDB), sta dentro quella
+cavità. È una molecola quasi tutta apolare, tranne per un ossidrile.
+La domanda dell'esperimento, in fondo, è questa: quell'ossidrile andrà a cercare la
+glutammina?
+
+---
+
+## Che cosa c'è dentro il file
 
 ```bash
 cd ~/esercitazione-MD/run
@@ -90,8 +115,12 @@ grep '^ATOM' 3HTB.pdb | cut -c17 | sort | uniq -c
 ```
 
 Sessantaquattro atomi compaiono **due volte**, una con `A` in colonna 17 e una
-con `B`. Sono catene laterali trovate in due posizioni diverse in copie diverse
-della proteina nel cristallo; lo sperimentatore le ha modellate entrambe.
+con `B`. Succede perché un cristallo contiene miliardi di copie della stessa proteina,
+e una catena laterale flessibile può essere orientata in un modo in alcune
+copie e in un altro modo nelle altre. La densità elettronica le mostra
+entrambe, e il cristallografo le ha modellate entrambe.
+
+![due conformeri della Gln102](../img/01-altloc.png)
 
 Una simulazione non può avere un atomo in due posti. Devi sceglierne uno. Tieni
 `A` (per convenzione è quella a occupanza maggiore). Se te ne dimentichi,

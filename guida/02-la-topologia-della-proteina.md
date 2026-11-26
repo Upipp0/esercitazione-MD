@@ -167,6 +167,16 @@ forza. GROMACS guarda i *tipi* degli atomi 1 e 2 — `N3` e `H` — e trova i
 parametri per quella coppia nel campo di forze incluso. La topologia dichiara
 la chimica; il campo di forze dichiara la fisica.
 
+Le quattro sezioni sono quattro modi di guardare gli stessi atomi:
+
+![i quattro tipi di termine](../img/02-termini.png)
+
+Le prime tre sono i termini legati del campo di forze che hai visto alla pagina
+00: una molla per ogni legame, una per ogni angolo, un termine periodico per
+ogni rotazione. La quarta, `[ pairs ]`, è la correzione di cui si parlava
+sopra: le coppie 1-4 sono escluse dal calcolo non legato normale e rimesse a
+forza ridotta.
+
 È esattamente il meccanismo che sfrutteremo alla pagina successiva, ed è anche
 il meccanismo che fallisce rumorosamente se i tipi atomici di un ligando non
 sono stati dichiarati.

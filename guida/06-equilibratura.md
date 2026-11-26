@@ -137,6 +137,13 @@ Energy              Average   Err.Est.      RMSD   Tot-Drift
 Temperature         300.017       0.27   2.93459    1.59394  (K)
 ```
 
+![temperatura e densita](../img/06-equilibratura.png)
+
+I due grafici vanno letti in modo diverso, ed è il motivo per cui sono messi
+uno accanto all'altro. La temperatura **arriva subito** al valore giusto e poi
+oscilla parecchio; la densità **ci mette di più** ad arrivare ma, una volta
+arrivata, è quasi immobile.
+
 Vuoi la media a 300 e la deriva piccola. Un RMSD di ±3 K in un sistema di
 queste dimensioni è giusto, non un fallimento: l'ampiezza relativa delle
 fluttuazioni di temperatura va come $1/\sqrt{N}$, e
@@ -195,13 +202,14 @@ davvero un parametro fisico: dice al barostato di quanto muovere la scatola per
 un dato errore di pressione. L'acqua domina la scatola, quindi il valore
 dell'acqua è quello giusto.
 
-**`refcoord-scaling = com`** è piccolo, facile da dimenticare, e corrompe la
-simulazione se lo ometti. Il barostato riscala la scatola e tutte le coordinate
-che contiene. I vincoli posizionali, intanto, tirano gli atomi verso coordinate
-di riferimento fisse che *non* vengono riscalate — quindi, man mano che la
-scatola cambia dimensione, i vincoli tirano sempre più forte su un soluto che
-si allontana dai propri riferimenti. `com` riscala anche le posizioni di
-riferimento insieme alla scatola, tramite il loro centro di massa.
+**`refcoord-scaling = com`** è piccolo, facile da dimenticare, e rovina la
+simulazione se lo ometti. Il problema è questo. Il barostato riscala la scatola
+e tutte le coordinate dentro di essa. I vincoli posizionali, però, tengono
+ciascun atomo legato a una posizione di riferimento che *non* viene riscalata.
+Man mano che la scatola cambia dimensione le due cose divergono: i riferimenti
+restano dov'erano, gli atomi si spostano con la scatola, e le molle tirano
+sempre più forte. `com` riscala anche le posizioni di riferimento, usando il
+loro centro di massa, e le due cose restano allineate.
 
 > **Regola: ogni volta che `define = -DPOSRES` e `pcoupl` sono attivi insieme,
 > imposta `refcoord-scaling`.** GROMACS ti avvisa, e l'avviso non è decorativo.

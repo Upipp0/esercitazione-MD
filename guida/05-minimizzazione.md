@@ -8,25 +8,34 @@
 
 Niente di quello che hai costruito finora è stato costruito con cura.
 `gmx solvate` ha riempito la scatola impilando copie di un cubetto d'acqua
-pre-equilibrato e cancellando le molecole che si sovrapponevano al soluto — e
-la "sovrapposizione" è stata giudicata con una tabella di raggi di van der
-Waals, non con l'energia. `gmx genion` ha lasciato cadere ioni in posizioni
-d'acqua. E le coordinate della proteina vengono da un cristallo, raffinate
-contro la densità elettronica con una funzione di energia diversa da quella che
-stai per usare.
+già equilibrato e cancellando le molecole finite addosso alla proteina. Ma per
+decidere che cosa fosse "addosso" ha usato una tabella di raggi atomici, non
+l'energia: è un criterio grossolano. `gmx genion` ha poi sostituito alcune di
+quelle acque con ioni, senza guardare dove finissero. E le coordinate della
+proteina vengono da un cristallo, dove sono state ottimizzate contro la densità
+elettronica con una funzione di energia diversa da quella che userai adesso.
 
 Quindi da qualche parte in quei 33 382 atomi ci sono coppie leggermente troppo
 vicine. Nel termine di Lennard-Jones, "leggermente troppo vicine" non è una
 cosa da poco:
 
-$$
-V_{\mathrm{LJ}} \propto \left(\frac{\sigma}{r}\right)^{12}
-$$
+<p align="center"><img src="../img/formula-lennard-jones.png" width="200" alt="repulsione di Lennard-Jones"></p>
 
 Dimezza la distanza e la repulsione cresce di un fattore 4096. Fai partire la
 dinamica da lì e quell'atomo riceve una forza enorme, fa un passo enorme,
 atterra in un posto assurdo, e la simulazione muore — di solito con un
 `LINCS warning` o semplicemente con `nan`.
+
+Non è un caso di scuola: ecco il contatto peggiore di questo sistema, prima e
+dopo la minimizzazione.
+
+![prima e dopo la minimizzazione](../img/05-minimizzazione.png)
+
+Due ossigeni a 1,74 Å l'uno dall'altro. La distanza normale fra due ossigeni
+legati a idrogeno è circa 2,8 Å: ed è esattamente dove finiscono dopo la
+minimizzazione. Guarda anche l'orientamento: la molecola d'acqua ha ruotato, e
+adesso punta un idrogeno verso il carbonile. **La minimizzazione non ha solo
+allontanato due atomi. Ha trovato il legame a idrogeno.**
 
 La **minimizzazione dell'energia** scende lungo la superficie di energia
 potenziale finché non ci sono più forze grandi. Non è dinamica. Non c'è tempo,
@@ -112,9 +121,7 @@ Un `.mdp` ha sempre un `integrator`, ma `steep` non lo è. La **discesa più
 ripida** (*steepest descent*) sposta semplicemente ogni atomo un po' lungo la
 forza che agisce su di esso:
 
-$$
-\mathbf{r}_{n+1} = \mathbf{r}_n + \frac{\mathbf{F}_n}{\max|\mathbf{F}_n|}\, h_n
-$$
+<p align="center"><img src="../img/formula-discesa.png" width="300" alt="passo della discesa piu ripida"></p>
 
 Se l'energia è scesa, accetta il passo e aumenta $h$; se è salita, rifiutalo e
 dimezza $h$. È rozzo, smette di fare progressi vicino al minimo, ed è

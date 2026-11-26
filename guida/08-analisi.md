@@ -74,9 +74,7 @@ Scarto quadratico medio: prendi una struttura di riferimento, sovrapponi il
 fotogramma a essa nel modo migliore possibile, e misura quanto gli atomi si
 siano allontanati da dove erano.
 
-$$
-\mathrm{RMSD}(t) = \sqrt{\frac{1}{N}\sum_{i=1}^{N} \left| \mathbf{r}_i(t) - \mathbf{r}_i^{\mathrm{rif}} \right|^2 }
-$$
+<p align="center"><img src="../img/formula-rmsd.png" width="330" alt="definizione di RMSD"></p>
 
 La sovrapposizione è la parte importante. Senza, staresti misurando traslazione
 e rotazione dell'intera proteina, che non dicono niente. Per questo `gmx rms`
@@ -112,6 +110,8 @@ significa che è rimasto dove il cristallografo lo aveva trovato. Un gradino
 significa che è passato a un'altra posa. Una salita costante significa che se
 ne sta andando.
 
+![RMSD](../img/08-rmsd.png)
+
 ---
 
 ## Passo 3: RMSF — che cosa si è mosso?
@@ -119,9 +119,7 @@ ne sta andando.
 L'RMSD comprime l'intera struttura in un numero per fotogramma. L'RMSF fa
 l'opposto: un numero per atomo, mediato su tutti i fotogrammi.
 
-$$
-\mathrm{RMSF}_i = \sqrt{ \big\langle\, \left| \mathbf{r}_i(t) - \langle \mathbf{r}_i \rangle \right|^2 \,\big\rangle_t }
-$$
+<p align="center"><img src="../img/formula-rmsf.png" width="310" alt="definizione di RMSF"></p>
 
 Nota il riferimento: la **posizione media dell'atomo stesso**, non la struttura
 di partenza. L'RMSF misura quanto un atomo tremola attorno a dove sta di
@@ -144,6 +142,8 @@ atomo — molto più leggibile.
 
 Aspettati estremità e anse superficiali in cima, e il nucleo idrofobico in
 fondo.
+
+![RMSF](../img/08-rmsf.png)
 
 ---
 
@@ -186,10 +186,12 @@ GROMACS conta un legame a idrogeno quando
 - la **distanza donatore–accettore** è sotto `-hbr`, predefinito **0,35 nm**, e
 - l'angolo **accettore–donatore–idrogeno** è sotto `-hba`, predefinito **30°**.
 
-Sono entrambe convenzioni, non fisica. Non esiste un confine netto fra un
-legame a idrogeno e un contatto ravvicinato, e programmi diversi tracciano la
-linea in posti diversi — motivo per cui un'occupanza citata senza il suo
-criterio non è un numero confrontabile con niente.
+Attenzione: sono due convenzioni, non due costanti fisiche. In natura non
+esiste un confine netto fra "legame a idrogeno" e "due atomi che si sono
+avvicinati", e programmi diversi tracciano la linea in punti diversi. Ne segue
+una regola pratica: **un'occupanza citata senza il suo criterio non si può
+confrontare con niente.** Se scrivi "il legame è presente nel 61 % dei
+fotogrammi", scrivi anche con quale soglia l'hai contato.
 
 ### Quale residuo è?
 
@@ -197,8 +199,11 @@ criterio non è un numero confrontabile con niente.
 idrogeno, accettore**.
 
 ```bash
-head -4 analysis/hbond.ndx
+sed -n '/hbonds_/,$p' analysis/hbond.ndx
 ```
+
+(il file contiene prima gli elenchi di donatori e accettori, che sono lunghi
+centinaia di righe: la sezione che interessa è l'ultima)
 
 Sulla traiettoria di riferimento da 5 ns si trovano due accettori:
 
@@ -221,16 +226,26 @@ for i in 2624 2636 1571 1616; do awk -v n=$i 'NR==n+2' complex.gro; done
   102GLN    OE1 1616   2.410  -2.167  -0.260     <- accettore: il carbonile di Gln102
 ```
 
-**Gln102 e Ala99 — entrambi i siti mutati.** L'ossidrile del ligando dona un
-legame a idrogeno alla catena laterale della glutammina che la mutazione M102Q
-ha messo lì, e ogni tanto al carbonile dello scheletro dell'alanina lasciata
-dalla mutazione L99A. La simulazione ha trovato l'interazione progettata senza
-che le sia stato detto di cercarla.
+**Gln102 e Ala99: tutti e due i siti mutati.** L'ossidrile del ligando dona un
+legame a idrogeno alla glutammina messa lì dalla mutazione M102Q. E ogni tanto
+ne dona uno anche al carbonile dell'alanina lasciata dalla mutazione L99A.
 
-> Sulla tua simulazione da 250 ps troverai quasi certamente **solo Gln102**. Il
-> secondo partner compare solo con un campionamento più lungo. Tienilo a mente:
-> è una dimostrazione concreta del fatto che un'interazione assente da una
-> traiettoria breve non è un'interazione che non esiste.
+Fermati un attimo su questo risultato. A `gmx hbond` non è stato detto dove
+guardare: gli abbiamo chiesto quali legami a idrogeno faccia il ligando con la
+proteina, e lui ha risposto nominando proprio i due residui che erano stati
+cambiati in laboratorio.
+
+Anche la tua simulazione da 250 ps trova tutti e due gli accettori: a cambiare
+non è *quali* legami esistono, ma **quanto spesso ci sono**. Sui 250 ps il
+legame a idrogeno è presente nel 38 % dei fotogrammi, sui 5 ns nel 61 %. Due
+numeri che differiscono di quasi il doppio, dalla stessa simulazione dello
+stesso sistema: tienilo a mente ogni volta che leggi un'occupanza ricavata da
+una traiettoria corta.
+
+Ma il legame a idrogeno è solo una parte della storia. Ecco tutto quello che
+tocca il ligando:
+
+![i contatti](../img/08-contatti.png)
 
 ---
 
@@ -272,9 +287,8 @@ Sulla traiettoria di riferimento:
 ```
 
 Il residuo 99 e il residuo 102 sono entrambi in quell'elenco — le due posizioni
-mutate per creare questa cavità. (Sui tuoi 250 ps ne troverai meno, circa
-diciotto: meno tempo significa meno residui che prima o poi si affacciano sul
-sito.)
+mutate per creare questa cavità. (Sui tuoi 250 ps ne troverai una ventina:
+meno tempo significa meno residui che prima o poi si affacciano sul sito.)
 
 Adesso disegna:
 
@@ -282,17 +296,32 @@ Adesso disegna:
 ~/mdvenv/bin/python ../scripts/plot_analysis.py analysis/
 ```
 
-Scrive `analysis/analysis.png` e stampa i numeri che ci stanno dietro. Sulla
-traiettoria di riferimento da 5 ns:
+Scrive `analysis/analysis.png` e stampa i numeri che ci stanno dietro. Su una
+corsa da 250 ps come la tua:
+
+```
+  scheletro proteico   RMSD  media 0.073 nm   seconda meta 0.075 +- 0.009 nm   max 0.098 nm
+  ligando JZ4          RMSD  media 0.114 nm   seconda meta 0.118 +- 0.033 nm   max 0.221 nm
+  residui del sito     RMSF  media 0.057 nm contro 0.077 nm per il resto
+  piu mobili           residui 76 (0.16 nm), 163 (0.15 nm), 162 (0.14 nm), 22 (0.13 nm)
+  legami a idrogeno    media 0.38 per fotogramma   almeno uno nel 38% dei fotogrammi
+  lunghezza del legame media 0.306 nm (il raggio di taglio usato era 0.35 nm)
+```
+
+e sui 5 ns di riferimento:
 
 ```
   scheletro proteico   RMSD  media 0.087 nm   seconda meta 0.090 +- 0.014 nm   max 0.148 nm
   ligando JZ4          RMSD  media 0.118 nm   seconda meta 0.121 +- 0.034 nm   max 0.238 nm
   residui del sito     RMSF  media 0.073 nm contro 0.091 nm per il resto
-  piu mobili           residui 119 (0.21 nm), 162 (0.21 nm), 163 (0.19 nm), 76 (0.17 nm), 48 (0.16 nm)
+  piu mobili           residui 119 (0.21 nm), 162 (0.21 nm), 163 (0.19 nm), 76 (0.17 nm)
   legami a idrogeno    media 0.61 per fotogramma   almeno uno nel 61% dei fotogrammi
   lunghezza del legame media 0.299 nm (il raggio di taglio usato era 0.35 nm)
 ```
+
+I valori non coincidono, e **non devono coincidere**: 125 fotogrammi sono
+pochi. Guarda di quanto si spostano e considera quella la tua stima
+dell'incertezza.
 
 Copia l'immagine sul tuo computer per guardarla:
 
@@ -320,10 +349,16 @@ della proteina, che è quello che una tasca idrofobica sepolta dovrebbe essere.
 I picchi sono le estremità della catena e le anse superficiali.
 
 **Un legame a idrogeno, presente circa il 60 % del tempo, lungo 0,30 nm.** Non
-è permanente, e questa è la risposta giusta e non una delusione: un singolo
-legame a idrogeno a 300 K si rompe e si riforma continuamente. Quello che tiene
-fermo questo ligando è soprattutto la sepoltura idrofobica; il legame con la
-Gln102 è un extra specifico e intermittente.
+è permanente, e questa è la risposta giusta, non una delusione: un singolo
+legame a idrogeno a 300 K si rompe e si riforma di continuo.
+
+E qui sta la risposta alla domanda da cui siamo partiti. La glutammina
+introdotta dalla mutazione M102Q **viene trovata**: l'ossidrile del ligando la
+cerca e ci fa un legame a idrogeno. Ma non è quel legame a tenere fermo il
+ligando. A tenerlo fermo sono i contatti idrofobici — una dozzina, sempre
+presenti — mentre il legame a idrogeno c'è in sei fotogrammi su dieci. Il
+progetto della cavità ha funzionato; l'interazione che ne risulta è reale e,
+presa da sola, debole.
 
 ---
 
@@ -331,9 +366,9 @@ Gln102 è un extra specifico e intermittente.
 
 1. Il tuo RMSD dello scheletro sale ripidamente nei primi picosecondi e poi si
    appiattisce. Perché? È equilibratura che non hai fatto, o è altro?
-2. L'occupanza del legame a idrogeno è circa il 56 % sui tuoi 250 ps e il 61 %
-   sui 5 ns di riferimento. Quale numero citeresti, e che cosa ti dice la
-   differenza fra i due su quanto sono lunghi 250 ps?
+2. L'occupanza del legame a idrogeno è il 38 % sui tuoi 250 ps e il 61 % sui
+   5 ns di riferimento. Quale dei due numeri citeresti in una relazione, e che
+   cosa ti dice la differenza fra i due su quanto sono lunghi 250 ps?
 3. L'RMSF è basso per i residui del sito. Dai due spiegazioni diverse — una
    sulla proteina, una sul ligando — e di' che cosa simuleresti per
    distinguerle.

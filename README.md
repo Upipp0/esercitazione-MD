@@ -8,8 +8,11 @@ breve traiettoria di dinamica molecolare e da questa misurerai tre cose: quanto
 si è mossa la struttura, quali parti si sono mosse di più, e se il ligando è
 rimasto legato alla proteina da un legame a idrogeno.
 
+![il sistema simulato](img/00-sistema.png)
+
 Il sistema è il **lisozima T4 L99A/M102Q con 2-propilfenolo**
-([PDB 3HTB](https://www.rcsb.org/structure/3HTB)). È stato scelto perché è
+([PDB 3HTB](https://www.rcsb.org/structure/3HTB)): 33 382 atomi in tutto, di
+cui 2 636 sono la proteina e il ligando e tutto il resto è acqua e sale. È stato scelto perché è
 abbastanza piccolo da arrivare in fondo in un pomeriggio su una macchina senza
 scheda grafica, e perché porta con sé una domanda precisa, a cui saprai
 rispondere alla fine:
@@ -72,11 +75,22 @@ Se l'ultimo comando stampa `GROMACS version: 2026.2`, sei pronto.
 | `mdp/` | un file di impostazioni per ogni stadio, commentato riga per riga |
 | `scripts/` | lo script dei grafici, uno di recupero e i comandi di analisi |
 | `reference/` | una traiettoria di 5 ns già completata, con la sua analisi |
+| `img/` | le figure della guida |
+| `scripts/figure/` | gli script che le hanno prodotte |
 
-**`reference/` è la tua rete di sicurezza.** L'analisi della pagina 08 funziona
-sulla tua traiettoria, ma se la tua simulazione va lenta, si interrompe, o
-semplicemente vuoi più dati di quanti ne diano 250 ps, ogni comando di analisi
-funziona identico sulla traiettoria di riferimento. Non resterai bloccato.
+Le figure non sono disegni: escono tutte da questa stessa simulazione, con
+PyMOL e matplotlib. Se vuoi rifarle sulla *tua* traiettoria, gli script sono
+lì e ciascuno dice in cima quali file gli servono. Per esempio:
+
+```bash
+pymol -cq scripts/figure/fig_minimizzazione.py -- run/solv_ions.gro run/em.gro img
+```
+
+**`reference/` è la tua rete di sicurezza.** L'analisi della pagina 08 si fa
+sulla traiettoria che produci tu. Ma se la tua simulazione va lenta, o si
+interrompe, o se vuoi semplicemente più dati di quanti ne diano 250 ps, tutti i
+comandi funzionano identici su quella di riferimento: cambiano solo i nomi dei
+file. Non resterai bloccato.
 
 ---
 
