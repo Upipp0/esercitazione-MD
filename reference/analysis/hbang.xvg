@@ -1,0 +1,47 @@
+# This file was created Thu Nov 26 02:17:19 2026
+# Created by:
+#                      :-) GROMACS - gmx hbond, 2026.2 (-:
+# 
+# Executable:   /modules_data/gromacs/2026.2/build/USE_ME/bin/gmx
+# Data prefix:  /modules_data/gromacs/2026.2/build/USE_ME
+# Working dir:  /home/gcarotenuto/md-build/work/refship
+# Command line:
+#   gmx hbond -f md_ref.xtc -s md_ref.tpr -r 'resname JZ4' -t 'group Protein' -num analysis/hbnum.xvg -dist analysis/hbdist.xvg -ang analysis/hbang.xvg -o analysis/hbond.ndx
+# gmx hbond is part of G R O M A C S:
+#
+# Great Red Oystrich Makes All Chemists Sane
+#
+@    title "Hydrogen Bond Angle Distribution Histogram"
+@    xaxis  label "Hydrogen - Donor - Acceptor Angle (degrees)"
+@    yaxis  label "Probability"
+@TYPE xy
+       0.5  0.0000000
+       1.5  0.0000000
+       2.5  0.0032573
+       3.5  0.0065147
+       4.5  0.0032573
+       5.5  0.0032573
+       6.5  0.0065147
+       7.5  0.0130293
+       8.5  0.0032573
+       9.5  0.0065147
+      10.5  0.0032573
+      11.5  0.0195440
+      12.5  0.0065147
+      13.5  0.0130293
+      14.5  0.0097720
+      15.5  0.0293160
+      16.5  0.0162866
+      17.5  0.0195440
+      18.5  0.0390879
+      19.5  0.0521173
+      20.5  0.0521173
+      21.5  0.0651466
+      22.5  0.0749186
+      23.5  0.0846905
+      24.5  0.0944625
+      25.5  0.0879479
+      26.5  0.0781759
+      27.5  0.0749186
+      28.5  0.0716612
+      29.5  0.0618892

@@ -1,0 +1,18 @@
+# Where you work.  Nothing in here belongs in the repository: a solvated
+# system is ~1.5 MB per .gro and a trajectory is larger still.
+run/
+*.tpr
+*.cpt
+*.edr
+*.trr
+\#*\#
+step*.pdb
+
+# except the reference trajectory, which is the point of reference/
+!reference/*.tpr
+!reference/*.xtc
+
+# python
+__pycache__/
+*.pyc
+venv/

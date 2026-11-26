@@ -1,0 +1,48 @@
+; nvt.mdp - 100 ps a volume costante, atomi pesanti vincolati
+; Primo passo di dinamica.  Il termostato e acceso, il barostato no, e il
+; soluto e tenuto fermo perche sia il solvente a rilassarsi attorno a lui e
+; non il contrario.
+define          = -DPOSRES -DPOSRES_LIG   ; accende entrambi i file di vincoli
+
+integrator      = md          ; leap-frog (salto della rana)
+dt              = 0.002       ; ps  (2 fs; sicuro solo perche i legami X-H sono rigidi)
+nsteps          = 50000       ; 100 ps
+continuation    = no          ; si parte da zero: vincola la geometria di ingresso
+
+; --- scrittura ---
+nstxout-compressed = 5000     ; un fotogramma ogni 10 ps, nel file .xtc
+nstlog             = 1000
+nstenergy          = 1000
+
+; --- vincoli sui legami ---
+constraint-algorithm = lincs
+constraints          = h-bonds   ; legami X-H rigidi -> il passo da 2 fs e stabile
+lincs-iter           = 1
+lincs-order          = 4
+
+; --- ricerca dei vicini ed elettrostatica ---
+cutoff-scheme   = Verlet
+nstlist         = 20
+rlist           = 1.0
+coulombtype     = PME
+pme-order       = 4
+fourierspacing  = 0.12
+rcoulomb        = 1.0
+rvdw            = 1.0
+DispCorr        = EnerPres    ; correzione a lungo raggio per il LJ troncato
+
+; --- accoppiamento termico: la T di NVT ---
+tcoupl          = v-rescale   ; riscalamento stocastico delle velocita (Bussi)
+tc-grps         = Protein_JZ4 Water_and_ions
+tau-t           = 0.1 0.1     ; ps, costante di tempo dell'accoppiamento
+ref-t           = 300 300     ; K
+
+; --- accoppiamento di pressione: spento, questa e la V di NVT ---
+pcoupl          = no
+
+pbc             = xyz
+
+; --- velocita iniziali ---
+gen-vel         = yes
+gen-temp        = 300
+gen-seed        = -1          ; -1 = prendi il seme dall'orologio

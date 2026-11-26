@@ -1,0 +1,17 @@
+; em.mdp - minimizzazione dell'energia (discesa piu ripida)
+; Non e dinamica: niente tempo, niente temperatura, niente velocita.  Stiamo
+; solo scendendo lungo la superficie di energia potenziale per togliere le
+; sovrapposizioni che solvatazione e aggiunta di ioni hanno inevitabilmente
+; lasciato.
+integrator      = steep       ; discesa piu ripida, non un integratore di MD
+emtol           = 1000.0      ; kJ mol^-1 nm^-1: fermati quando la forza massima scende sotto
+emstep          = 0.01        ; passo iniziale (nm)
+nsteps          = 50000       ; arrenditi dopo questo numero di passi
+
+; --- ricerca dei vicini ed elettrostatica ---
+cutoff-scheme   = Verlet
+nstlist         = 10
+coulombtype     = PME         ; particle-mesh Ewald: elettrostatica a lungo raggio
+rcoulomb        = 1.0         ; nm, raggio di taglio nello spazio reale
+rvdw            = 1.0         ; nm, raggio di taglio di van der Waals
+pbc             = xyz         ; periodico in tutte e tre le direzioni

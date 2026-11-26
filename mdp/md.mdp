@@ -1,0 +1,46 @@
+; md.mdp - la simulazione di produzione: nessun vincolo, niente tenuto fermo
+; E l'unica parte di tutto il protocollo di cui analizziamo l'output.
+; nsteps e deliberatamente piccolo; vedi guida/07-produzione-e-prestazioni.md.
+
+integrator      = md
+dt              = 0.002
+nsteps          = 125000      ; 250 ps
+continuation    = yes
+
+; --- scrittura ---
+; compressed-x-grps tiene l'acqua fuori dalla traiettoria.  All'analisi
+; servono solo proteina e ligando, e cosi il file e ~12 volte piu piccolo.
+nstxout-compressed = 1000     ; un fotogramma ogni 2 ps -> 125 fotogrammi
+compressed-x-grps  = Protein_JZ4
+nstlog             = 5000
+nstenergy          = 1000
+
+constraint-algorithm = lincs
+constraints          = h-bonds
+lincs-iter           = 1
+lincs-order          = 4
+
+cutoff-scheme   = Verlet
+nstlist         = 20
+rlist           = 1.0
+coulombtype     = PME
+pme-order       = 4
+fourierspacing  = 0.12
+rcoulomb        = 1.0
+rvdw            = 1.0
+DispCorr        = EnerPres
+
+tcoupl          = v-rescale
+tc-grps         = Protein_JZ4 Water_and_ions
+tau-t           = 0.1 0.1
+ref-t           = 300 300
+
+pcoupl           = c-rescale
+pcoupltype       = isotropic
+tau-p            = 1.0
+ref-p            = 1.0
+compressibility  = 4.5e-5
+
+pbc             = xyz
+
+gen-vel         = no

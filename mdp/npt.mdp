@@ -1,0 +1,45 @@
+; npt.mdp - 100 ps a pressione costante, atomi pesanti ancora vincolati
+; Come NVT, ma adesso la scatola puo respirare, cosi il sistema raggiunge la
+; densita che il campo di forze vuole davvero a 300 K e 1 bar.
+define          = -DPOSRES -DPOSRES_LIG
+
+integrator      = md
+dt              = 0.002
+nsteps          = 50000       ; 100 ps
+continuation    = yes         ; velocita e vincoli arrivano da NVT
+
+nstxout-compressed = 5000
+nstlog             = 1000
+nstenergy          = 1000
+
+constraint-algorithm = lincs
+constraints          = h-bonds
+lincs-iter           = 1
+lincs-order          = 4
+
+cutoff-scheme   = Verlet
+nstlist         = 20
+rlist           = 1.0
+coulombtype     = PME
+pme-order       = 4
+fourierspacing  = 0.12
+rcoulomb        = 1.0
+rvdw            = 1.0
+DispCorr        = EnerPres
+
+tcoupl          = v-rescale
+tc-grps         = Protein_JZ4 Water_and_ions
+tau-t           = 0.1 0.1
+ref-t           = 300 300
+
+; --- accoppiamento di pressione: la P di NPT ---
+pcoupl           = c-rescale  ; riscalamento stocastico della cella
+pcoupltype       = isotropic  ; un solo fattore di scala per x, y e z
+tau-p            = 1.0        ; ps
+ref-p            = 1.0        ; bar
+compressibility  = 4.5e-5     ; bar^-1, quella dell'acqua liquida
+refcoord-scaling = com        ; OBBLIGATORIO quando vincoli e barostato coesistono
+
+pbc             = xyz
+
+gen-vel         = no          ; tieni le velocita con cui NVT ha finito

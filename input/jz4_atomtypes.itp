@@ -1,0 +1,24 @@
+; Tipi atomici GAFF2 usati da JZ4, estratti dal file scritto da acpype.
+;
+; Due cose da notare.
+;
+; 1. Devono essere inclusi PRIMA del primo [ moleculetype ] della topologia.
+;    GROMACS legge il file dall'alto in basso e non accetta piu un tipo
+;    atomico nuovo una volta che una molecola e cominciata.
+;
+; 2. La terza colonna, at.num, e il numero atomico.  acpype non la scrive.
+;    Alla dinamica non importa -- l'integratore usa la massa e i parametri di
+;    Lennard-Jones -- ma ai programmi di analisi che ragionano in termini
+;    chimici si'.  gmx hbond, per esempio, cerca donatori e accettori per
+;    elemento, e senza questa colonna riporta che il ligando non ha nessun
+;    ossigeno da cui donare.  Aggiunta a mano qui: c3/ca sono carbonio (6),
+;    oh e ossigeno (8), hc/ha/ho sono idrogeno (1).
+;
+[ atomtypes ]
+;name  bond_type  at.num    mass     charge  ptype   sigma         epsilon       ; Amber
+ c3      c3          6    12.01000  0.00000   A     3.39771e-01   4.51035e-01  ; 1.91  0.1078
+ ca      ca          6    12.01000  0.00000   A     3.31521e-01   4.13379e-01  ; 1.86  0.0988
+ oh      oh          8    16.00000  0.00000   A     3.24287e-01   3.89112e-01  ; 1.82  0.0930
+ hc      hc          1     1.00800  0.00000   A     2.60018e-01   8.70272e-02  ; 1.46  0.0208
+ ha      ha          1     1.00800  0.00000   A     2.62548e-01   6.73624e-02  ; 1.47  0.0161
+ ho      ho          1     1.00800  0.00000   A     5.37925e-02   1.96648e-02  ; 0.30  0.0047
